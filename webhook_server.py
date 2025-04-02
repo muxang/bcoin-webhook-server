@@ -704,6 +704,26 @@ class WebhookForwarder:
         Returns:
             转发结果列表
         """
+        # 添加消息ID，用于去重
+        msg_id = message.get("_id") or str(hash(json.dumps(message, sort_keys=True)))
+        message["_id"] = msg_id
+        
+        # 检查该消息是否已经处理过（最近5分钟内）
+        current_time = time.time()
+        
+        # 清理过期的消息ID缓存
+        self._clean_message_id_cache(current_time)
+        
+        # 检查是否是重复消息
+        if hasattr(self, "_message_id_cache") and msg_id in self._message_id_cache:
+            logger.warning(f"跳过重复消息 ID:{msg_id}")
+            return []
+        
+        # 将消息ID添加到缓存
+        if not hasattr(self, "_message_id_cache"):
+            self._message_id_cache = {}
+        self._message_id_cache[msg_id] = current_time
+            
         # 添加到历史记录
         self._add_to_history(message)
         
@@ -713,30 +733,64 @@ class WebhookForwarder:
         # 转发结果
         results = []
         
+        # 创建一个已发送目标的集合，避免重复发送
+        sent_targets = set()
+        
         # 如果指定了目标ID，则只转发到这些目标
         if target_ids and len(target_ids) > 0:
             logger.info(f"将消息转发到指定目标: {target_ids}")
             for target in self.config.get("targets", []):
-                if target.get("id") in target_ids and target.get("enabled", True):
+                target_id = target.get("id")
+                # 跳过已发送的目标
+                if target_id in sent_targets:
+                    continue
+                    
+                if target_id in target_ids and target.get("enabled", True):
                     result = await self.forward_to_target(message, target)
                     results.append({
-                        "target_id": target.get("id"),
+                        "target_id": target_id,
                         "target_name": target.get("name"),
                         "success": result
                     })
+                    sent_targets.add(target_id)
         else:
-        # 转发到所有启用的目标
+            # 转发到所有启用的目标
             logger.info("将消息转发到所有符合条件的目标")
-        for target in self.config.get("targets", []):
-            if target.get("enabled", True) and self._should_forward(message, target):
-                result = await self.forward_to_target(message, target)
-                results.append({
-                    "target_id": target.get("id"),
-                    "target_name": target.get("name"),
-                    "success": result
-                })
+            for target in self.config.get("targets", []):
+                target_id = target.get("id")
+                # 跳过已发送的目标
+                if target_id in sent_targets:
+                    continue
+                    
+                if target.get("enabled", True) and self._should_forward(message, target):
+                    result = await self.forward_to_target(message, target)
+                    results.append({
+                        "target_id": target_id,
+                        "target_name": target.get("name"),
+                        "success": result
+                    })
+                    sent_targets.add(target_id)
         
         return results
+    
+    def _clean_message_id_cache(self, current_time: float, max_age: int = 300):
+        """清理过期的消息ID缓存
+        
+        Args:
+            current_time: 当前时间戳
+            max_age: 最大缓存时间（秒）
+        """
+        if not hasattr(self, "_message_id_cache"):
+            self._message_id_cache = {}
+            return
+            
+        expired_ids = []
+        for msg_id, timestamp in self._message_id_cache.items():
+            if current_time - timestamp > max_age:
+                expired_ids.append(msg_id)
+                
+        for msg_id in expired_ids:
+            del self._message_id_cache[msg_id]
     
     def _should_forward(self, message: dict, target: dict) -> bool:
         """判断消息是否应该转发到目标

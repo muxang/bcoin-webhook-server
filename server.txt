@@ -1,0 +1,22 @@
+sudo tee /etc/systemd/system/bcoin-webhook.service > /dev/null <<EOF
+[Unit]
+Description=Bcoin Webhook Server
+After=network.target
+
+[Service]
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/home/ubuntu/bcoin-webhook-server
+ExecStart=/home/ubuntu/bcoin-webhook-server/myenv/bin/python /home/ubuntu/bcoin-webhook-server/webhook_server.py
+Restart=always
+RestartSec=5
+Environment="PATH=/home/ubuntu/bcoin-webhook-server/myenv/bin:/usr/local/bin:/usr/bin:/bin"
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+sudo systemctl daemon-reload && sudo systemctl enable bcoin-webhook.service && sudo systemctl start bcoin-webhook.service
+
+sudo journalctl -u \
+bcoin-webhook.service -f
