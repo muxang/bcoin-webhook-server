@@ -1,0 +1,9 @@
+2025-04-03 03:34:19.892 | INFO     | __main__:main:1003 - 启动Webhook转发服务器:
+2025-04-03 03:34:19.893 | INFO     | __main__:main:1004 -   监听地址: 0.0.0.0
+2025-04-03 03:34:19.893 | INFO     | __main__:main:1005 -   监听端口: 8080
+2025-04-03 03:34:19.893 | INFO     | __main__:main:1006 -   配置文件: config/webhook_config.json
+2025-04-03 03:34:19.895 | INFO     | __main__:main:1007 -   日志级别: INFO
+2025-04-03 03:34:19.896 | INFO     | __main__:_load_config:112 - 已加载配置文件: config/webhook_config.json
+2025-04-03 03:34:19.896 | WARNING  | __main__:_load_config:122 - 配置文件中缺少templates字段，已添加默认配置
+2025-04-03 03:34:19.898 | INFO     | __main__:_register_route:482 - 已注册webhook路由: POST /webhook/wx
+2025-04-03 03:34:19.902 | INFO     | __main__:__init__:61 - Webhook转发服务器初始化完成，配置路径: config/webhook_config.json

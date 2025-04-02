@@ -1,0 +1,19 @@
+{
+  "targets": [
+    {
+      "id": "wx_personal",
+      "name": "微信个人号-川沐跟单",
+      "type": "wechat_personal",
+      "url": "http://101.32.9.66:7777/qianxun/httpapi?wxid=wxid_8x9vpn2590bd22",
+      "wxid": "47575687248@chatroom",
+      "enabled": true
+    }
+  ],
+  "routes": {
+    "/webhook/wx": {
+      "target_ids": ["wx_personal"],
+      "description": "微信个人号通知路由",
+      "methods": ["POST"]
+    }
+  }
+}
