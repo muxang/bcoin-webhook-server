@@ -9,6 +9,22 @@
       "enabled": true
     },
     {
+      "id": "wx_personal_follow_next",
+      "name": "微信个人号-川沐跟单-节点监察群",
+      "type": "wechat_personal",
+      "url": "http://101.32.9.66:7777/qianxun/httpapi?wxid=wxid_8x9vpn2590bd22",
+      "wxid": "45216026345@chatroom",
+      "enabled": true
+    },
+    {
+      "id": "wx_personal_follow_one",
+      "name": "微信个人号-川沐跟单-节点监察群",
+      "type": "wechat_personal",
+      "url": "http://101.32.9.66:7777/qianxun/httpapi?wxid=wxid_8x9vpn2590bd22",
+      "wxid": "43858140795@chatroom",
+      "enabled": true
+    },
+    {
       "id": "wx_personal_news",
       "name": "微信个人号-新闻推送",
       "type": "wechat_personal",
@@ -20,6 +36,16 @@
   "routes": {
     "/webhook/follow": {
       "target_ids": ["wx_personal_follow"],
+      "description": "微信个人号通知路由",
+      "methods": ["POST"]
+    },
+    "/webhook/follownext": {
+      "target_ids": ["wx_personal_follow_next"],
+      "description": "微信个人号通知路由",
+      "methods": ["POST"]
+    },
+    "/webhook/followone": {
+      "target_ids": ["wx_personal_follow_one"],
       "description": "微信个人号通知路由",
       "methods": ["POST"]
     },
