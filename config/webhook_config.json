@@ -2,15 +2,15 @@
   "targets": [
     {
       "id": "wx_personal_follow",
-      "name": "微信个人号-川沐跟单-节点监察群",
+      "name": "微信个人号-川沐跟单-bybit",
       "type": "wechat_personal",
       "url": "http://101.32.9.66:7777/qianxun/httpapi?wxid=wxid_8x9vpn2590bd22",
-      "wxid": "48231994204@chatroom",
+      "wxid": "52601438331@chatroom",
       "enabled": true
     },
     {
       "id": "wx_personal_follow_next",
-      "name": "微信个人号-川沐跟单-节点监察群",
+      "name": "微信个人号-川沐跟单-next",
       "type": "wechat_personal",
       "url": "http://101.32.9.66:7777/qianxun/httpapi?wxid=wxid_8x9vpn2590bd22",
       "wxid": "45216026345@chatroom",
@@ -18,7 +18,7 @@
     },
     {
       "id": "wx_personal_follow_one",
-      "name": "微信个人号-川沐跟单-节点监察群",
+      "name": "微信个人号-川沐跟单-one",
       "type": "wechat_personal",
       "url": "http://101.32.9.66:7777/qianxun/httpapi?wxid=wxid_8x9vpn2590bd22",
       "wxid": "43858140795@chatroom",
