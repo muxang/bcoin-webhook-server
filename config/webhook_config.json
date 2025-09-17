@@ -31,6 +31,20 @@
       "url": "http://101.32.9.66:7777/qianxun/httpapi?wxid=wxid_8x9vpn2590bd22",
       "wxid": "47400003790@chatroom",
       "enabled": true
+    },
+    {
+      "id": "feishu_group",
+      "name": "飞书群通知",
+      "type": "feishu",
+      "url": "YOUR_FEISHU_WEBHOOK_URL_HERE",
+      "enabled": true,
+      "format_type": "text",
+      "format": {
+        "trade": "🔔 交易信号\n交易对: {symbol}\n操作: {operation}\n价格: {price}\n数量: {amount}",
+        "error": "❌ 错误通知: {message}",
+        "status": "📊 状态通知: {message}",
+        "default": "{description}"
+      }
     }
   ],
   "routes": {
@@ -52,6 +66,11 @@
     "/webhook/news": {
       "target_ids": ["wx_personal_news"],
       "description": "微信个人号通知路由",
+      "methods": ["POST"]
+    },
+    "/webhook/feishu": {
+      "target_ids": ["feishu_group"],
+      "description": "飞书群通知路由",
       "methods": ["POST"]
     }
   }

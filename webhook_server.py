@@ -939,10 +939,61 @@ class WebhookForwarder:
                 # 格式化文本
                 try:
                     text = format_template.format(**format_data)
-                    return {"text": text}
+                    
+                    # 根据目标类型应用正确的格式包装
+                    target_type = target.get("type", "")
+                    if target_type == "feishu" or "feishu" in target.get("url", "").lower():
+                        return {
+                            "msg_type": "text",
+                            "content": {
+                                "text": text
+                            }
+                        }
+                    elif target_type == "wechat" or "wechat" in target.get("url", "").lower():
+                        return {
+                            "msgtype": "text",
+                            "text": {
+                                "content": text
+                            }
+                        }
+                    elif target_type == "dingtalk" or "dingtalk" in target.get("url", "").lower():
+                        return {
+                            "msgtype": "text",
+                            "text": {
+                                "content": text
+                            }
+                        }
+                    elif target_type == "wechat_personal":
+                        wxid = target.get("wxid", "")
+                        if not wxid:
+                            logger.warning(f"目标 {target.get('name')} 缺少wxid参数")
+                            return {}
+                        return {
+                            "type": "sendText",
+                            "data": {
+                                "wxid": wxid,
+                                "msg": text
+                            }
+                        }
+                    else:
+                        # 默认返回通用格式
+                        return {"text": text}
+                        
                 except KeyError as e:
                     logger.warning(f"格式化文本时缺少字段 {e}")
-                    return {"text": message.get("description", str(message))}
+                    fallback_text = message.get("description", str(message))
+                    
+                    # 同样应用正确的格式包装
+                    target_type = target.get("type", "")
+                    if target_type == "feishu" or "feishu" in target.get("url", "").lower():
+                        return {
+                            "msg_type": "text",
+                            "content": {
+                                "text": fallback_text
+                            }
+                        }
+                    else:
+                        return {"text": fallback_text}
         
         # 微信/企业微信格式
         if target.get("type") == "wechat" or "wechat" in target.get("url", "").lower():
